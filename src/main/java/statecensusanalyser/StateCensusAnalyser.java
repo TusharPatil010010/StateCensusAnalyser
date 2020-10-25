@@ -30,12 +30,53 @@ public class StateCensusAnalyser {
 		return counter;
 	}
 
+	public static <T> int openCsvBuilderCode(String csvIndiaStateCode, Object myClass) throws CensusAnalyserException {
+		int counter = 0;
+		try {
+			Iterator<Object> myIterator = getIteratorCensus(csvIndiaStateCode, myClass);
+			while (myIterator.hasNext()) {
+				counter++;
+				Object myObj = myIterator.next();
+				System.out.println(myObj.toString());
+			}
+		} catch (CensusAnalyserException e) {
+			throw e;
+		} catch (RuntimeException e) {
+			throw new CensusAnalyserException(CensusAnalyserException.CensusExceptionType.DELIMITER_ISSUE,
+					"might be some error related to delimiter at record no. : " + (counter + 1));
+		}
+		return counter;
+	}
+
 	public static Iterator<Object> getIteratorCensus(String csvIndiaStateCensus, Object myClass)
 			throws CensusAnalyserException {
 		Reader reader = null;
 		CsvToBean<Object> csvToBean;
 		try {
 			reader = Files.newBufferedReader(Paths.get(csvIndiaStateCensus));
+			csvToBean = new CsvToBeanBuilder(reader).withType((Class) myClass).withIgnoreLeadingWhiteSpace(true)
+					.build();
+			Iterator<Object> myIterator = csvToBean.iterator();
+			return myIterator;
+		} catch (NoSuchFileException e) {
+			throw new CensusAnalyserException(CensusAnalyserException.CensusExceptionType.NO_SUCH_FILE,
+					"no such file exists. Please enter correct file");
+		} catch (RuntimeException e) {
+			throw new CensusAnalyserException(CensusAnalyserException.CensusExceptionType.INCORRECT_DATA_ISSUE,
+					"delimiter error at line 1 OR might be some error "
+							+ "related to headers or incorrect extension / input file ");
+		} catch (IOException e) {
+			throw new CensusAnalyserException(CensusAnalyserException.CensusExceptionType.SOME_OTHER_IO_EXCEPTION,
+					"Some other IO related exception");
+		}
+	}
+
+	public static Iterator<Object> getIteratorCode(String csvIndiaStateCode, Object myClass)
+			throws CensusAnalyserException {
+		Reader reader = null;
+		CsvToBean<Object> csvToBean;
+		try {
+			reader = Files.newBufferedReader(Paths.get(csvIndiaStateCode));
 			csvToBean = new CsvToBeanBuilder(reader).withType((Class) myClass).withIgnoreLeadingWhiteSpace(true)
 					.build();
 			Iterator<Object> myIterator = csvToBean.iterator();
