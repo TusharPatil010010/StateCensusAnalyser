@@ -11,29 +11,10 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 
 public class StateCensusAnalyser {
-	public static <T> int openCsvBuilderCensus(String csvIndiaStateCensus, Object myClass)
-			throws CensusAnalyserException {
+	public static <T> int openCsvBuilder(String csvFilePath, Object myClass) throws CensusAnalyserException {
 		int counter = 0;
 		try {
-			Iterator<Object> myIterator = getIteratorCensus(csvIndiaStateCensus, myClass);
-			while (myIterator.hasNext()) {
-				counter++;
-				Object myObj = myIterator.next();
-				System.out.println(myObj.toString());
-			}
-		} catch (CensusAnalyserException e) {
-			throw e;
-		} catch (RuntimeException e) {
-			throw new CensusAnalyserException(CensusAnalyserException.CensusExceptionType.DELIMITER_ISSUE,
-					"might be some error related to delimiter at record no. : " + (counter + 1));
-		}
-		return counter;
-	}
-
-	public static <T> int openCsvBuilderCode(String csvIndiaStateCode, Object myClass) throws CensusAnalyserException {
-		int counter = 0;
-		try {
-			Iterator<Object> myIterator = getIteratorCensus(csvIndiaStateCode, myClass);
+			Iterator<Object> myIterator = getIteratorCensus(csvFilePath, myClass);
 			while (myIterator.hasNext()) {
 				counter++;
 				Object myObj = myIterator.next();
