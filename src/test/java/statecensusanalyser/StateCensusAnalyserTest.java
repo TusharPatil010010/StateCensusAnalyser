@@ -18,7 +18,7 @@ public class StateCensusAnalyserTest {
 	public void GivenTheStateCodesCsvFile_IfHasCorrectNumberOfRecords_ShouldReturnTrue() throws IOException {
 		StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 		try {
-			int count = stateCensusAnalyser.openCsvBuilderCensus(STATECODES_CSVFILE, StateCensus.class);
+			int count = stateCensusAnalyser.openCsvBuilderCode(STATECODES_CSVFILE, StateCensus.class);
 			System.out.println(count);
 			Assert.assertEquals(29, count);
 		} catch (CensusAnalyserException e) {
@@ -26,4 +26,13 @@ public class StateCensusAnalyserTest {
 		}
 	}
 
+	@Test
+	public void GivenTheStateCodeCsvFile_IfDoesntExist_ShouldThrowCensusAnalyserException() throws IOException {
+		try {
+			int count = StateCensusAnalyser.openCsvBuilderCode(WRONG_FILE, StateCensus.class);
+		} catch (CensusAnalyserException e) {
+			e.printStackTrace();
+			Assert.assertEquals(CensusAnalyserException.CensusExceptionType.NO_SUCH_FILE, e.type);
+		}
+	}
 }
